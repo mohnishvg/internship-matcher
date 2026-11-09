@@ -1,0 +1,18 @@
+.venv/
+__pycache__/
+node_modules/
+dist/
+.DS_Store
+# AI tooling and notes stay local
+.claude/
+.gemini/
+.impeccable/
+.trail/
+graft/
+.mcp.json
+.ignore
+AGENTS.md
+CLAUDE.md
+GEMINI.md
+DESIGN.md
+PRODUCT.md
