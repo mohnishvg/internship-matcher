@@ -5,8 +5,9 @@ import urllib.error
 import urllib.request
 
 LMSTUDIO_URL = os.environ.get("LMSTUDIO_URL", "http://localhost:1234/v1")
-# The name LM Studio shows for the embedding model you loaded.
-LMSTUDIO_MODEL = os.environ.get("LMSTUDIO_EMBED_MODEL", "text-embedding-nomic-embed-text-v1.5")
+# The name LM Studio shows for the embedding model you loaded. The LM Studio cutoff in
+# matcher.py was tuned on this model, so retune it if you switch.
+LMSTUDIO_MODEL = os.environ.get("LMSTUDIO_EMBED_MODEL", "text-embedding-qwen3-embedding-0.6b")
 FALLBACK_MODEL = "all-MiniLM-L6-v2"
 
 _local_model = None  # loaded on first use: it takes a few seconds and ~90 MB
