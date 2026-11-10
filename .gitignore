@@ -16,3 +16,6 @@ CLAUDE.md
 GEMINI.md
 DESIGN.md
 PRODUCT.md
+# Personal data: resume and ranking output stay local
+data/
+results/
