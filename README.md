@@ -7,8 +7,9 @@ Paste your resume and some job posts. The app ranks the jobs by how well your re
 1. `backend/matcher.py` pulls requirements out of the job post (bullet lines first, then sentences under a "Requirements"/"Qualifications"/"Skills" heading).
 2. Your resume is split into lines of 3+ words (one bullet per line works best).
 3. `backend/embeddings.py` embeds everything with LM Studio (`http://localhost:1234/v1`). If LM Studio isn't running, it falls back to the local `all-MiniLM-L6-v2` sentence-transformers model.
-4. Each requirement gets its best cosine similarity against your bullets. It counts as matched at or above the cutoff for the model in use: **0.35** for MiniLM and **0.55** for LM Studio. The score is the percentage of requirements matched.
-5. Keyword check: if a requirement names specific tools (from `TOOLS` in `backend/matcher.py`, e.g. Palantir, MLflow, SQL) and your resume mentions none of them, it counts as missing whatever its similarity.
+4. Soft skills ("excellent communication skills", "self-motivated team player") are listed under *Not scored*: a technical resume rarely states them, so their similarity can't tell a match from a gap. A line that also names something technical ("apply algorithms to problem-solving") is still scored.
+5. Each remaining requirement gets its best cosine similarity against your bullets. It counts as matched at or above the cutoff for the model in use: **0.35** for MiniLM and **0.57** for LM Studio. The score is the percentage of scored requirements matched.
+6. Keyword check: if a requirement names specific tools (from `TOOLS` in `backend/matcher.py`, e.g. Palantir, MLflow, SQL) and your resume mentions none of them, it counts as missing whatever its similarity. Not when the tools are only examples or one option ("such as MCP", "and/or version control", "or similar"): then the similarity decides.
 
 ## Setup (everything stays inside this folder)
 

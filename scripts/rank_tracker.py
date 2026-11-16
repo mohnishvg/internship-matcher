@@ -40,6 +40,7 @@ def main():
             "eligibility": r.get("eligibility", []),
             "matched": m["matched"],
             "missing": m["missing"],
+            "not_scored": m["not_scored"],
         })
 
     assert len(results) == len(roles), "every role should be scored"

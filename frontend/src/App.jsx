@@ -85,6 +85,12 @@ export default function App() {
               <strong>Missing ({j.missing.length})</strong>
               <ul>{j.missing.map((m, k) => <li key={k}>{m.requirement} <small>{m.similarity}</small></li>)}</ul>
             </div>
+            {j.not_scored?.length > 0 && (
+              <div>
+                <strong>Not scored ({j.not_scored.length})</strong>
+                <ul>{j.not_scored.map((m, k) => <li key={k}>{m.requirement} <small>{m.reason}</small></li>)}</ul>
+              </div>
+            )}
           </div>
           <small>Embeddings: {j.backend}</small>{' '}
           <button type="button" onClick={() => setJobs((js) => js.filter((x) => x.id !== j.id))}>Remove</button>
