@@ -122,5 +122,6 @@ def match(resume_text, job_text, embed):
         "matched": sorted(matched, key=lambda i: -i["similarity"]),
         "missing": sorted(missing, key=lambda i: -i["similarity"]),
         "not_scored": not_scored,
+        "cutoff": threshold,  # so the UI can explain similarities and flag near misses
         "backend": backend,
     }
