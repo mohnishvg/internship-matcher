@@ -1,5 +1,5 @@
 """Self-check for matcher.py. Needs no installs or model: run `python3 test_matcher.py`."""
-from matcher import extract_requirements, match, named_tools, resume_bullets
+from matcher import extract_requirements, is_soft_skill, match, named_tools, resume_bullets
 
 VOCAB = ["python", "react", "sql", "kubernetes", "api"]
 
@@ -29,7 +29,7 @@ assert r["score"] == 67, r
 assert [m["requirement"] for m in r["missing"]] == ["Kubernetes in production"]
 assert {m["requirement"] for m in r["matched"]} == {"Experience with Python", "Built a React frontend"}
 
-# Similarity 0.4 matches under MiniLM's 0.35 cutoff but not under LM Studio's 0.55.
+# Similarity 0.4 matches under MiniLM's 0.35 cutoff but not under LM Studio's 0.57.
 def embed_at(backend):
     return lambda texts: ([[1.0, 0.0]] + [[0.4, 0.84 ** 0.5]] * (len(texts) - 1), backend)
 
@@ -50,6 +50,20 @@ r = match(RESUME, "- Palantir Foundry or AWS\n- Java, Python or Go\n", same)
 assert [m["requirement"] for m in r["missing"]] == ["Palantir Foundry or AWS"], r
 assert r["missing"][0]["tools_not_in_resume"] == ["AWS", "Palantir"]
 assert [m["requirement"] for m in r["matched"]] == ["Java, Python or Go"]
+
+# When the tools are examples or one option ("and/or", "such as"), the similarity decides instead.
+r = match(RESUME, "- Cloud (AWS), SQL and/or version control\n- AI tech such as MCP\n", same)
+assert [m["requirement"] for m in r["matched"]] == ["Cloud (AWS), SQL and/or version control", "AI tech such as MCP"], r
+
+# Soft skills are listed but not scored, unless the line also names something technical.
+assert is_soft_skill("Excellent written and verbal communication skills")
+assert is_soft_skill("Self-motivated, independent, detail oriented, responsible team player")
+assert not is_soft_skill("Understanding of data structures and algorithms and how to apply them to problem-solving")
+assert not is_soft_skill("Experience with Python")
+r = match(RESUME, JOB + "- Strong communication skills\n", fake_embed)
+assert r["score"] == 67 and r["not_scored"] == [{"requirement": "Strong communication skills", "reason": "soft skill"}], r
+r = match(RESUME, "- Strong communication skills\n", same)  # nothing else to score: score it after all
+assert r["score"] == 100 and r["not_scored"] == [], r
 
 try:
     match("", JOB, fake_embed)
